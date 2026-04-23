@@ -29,7 +29,7 @@ export default function ImportModal({ settings, onImport, onClose }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Import from Claude Chat</h2>
+          <h2>Import Tracker</h2>
           <button className="btn-close" onClick={onClose}>✕</button>
         </div>
 
@@ -37,12 +37,12 @@ export default function ImportModal({ settings, onImport, onClose }) {
           {!preview ? (
             <>
               <p className="import-hint">
-                Open your Claude chat, copy the job tracker content, and paste it below.
-                Claude will automatically extract and structure your applications.
+                Paste your job tracker data from any source — a spreadsheet, doc, chat, or
+                plain text. Claude will automatically extract and structure your applications.
               </p>
               <textarea
                 className="import-textarea"
-                placeholder="Paste your job tracker from Claude chat here...&#10;&#10;Example:&#10;- Google | Software Engineer | Applied 2024-01-15 | Status: Phone Screen&#10;- Meta | Product Manager | Applied 2024-01-10 | Rejected"
+                placeholder="Paste your job tracker here — any format works...&#10;&#10;Example:&#10;- Google | Software Engineer | Applied 2024-01-15 | Status: Phone Screen&#10;- Meta | Product Manager | Applied 2024-01-10 | Rejected"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 rows={12}

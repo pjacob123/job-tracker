@@ -134,7 +134,7 @@ export default function Dashboard({ applications, settings, onSave, onDelete }) 
           ))}
         </select>
         <button className="btn-secondary" onClick={() => setShowImport(true)}>
-          Import from Claude
+          Import Tracker
         </button>
         <button className="btn-primary" onClick={handleAdd}>
           + Add Application
