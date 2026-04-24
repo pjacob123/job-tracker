@@ -64,12 +64,11 @@ export default function Dashboard({ applications, settings, onSave, onDelete }) 
       return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av)
     })
 
-  const stats = {
-    total: applications.length,
-    active: applications.filter((a) => !['Rejected', 'Withdrawn'].includes(a.status)).length,
-    dueFollowUp: applications.filter(isFollowUpDue).length,
-    offers: applications.filter((a) => a.status === 'Offer').length
-  }
+  const counts = ALL_STATUSES.reduce((acc, s) => {
+    acc[s] = applications.filter((a) => a.status === s).length
+    return acc
+  }, {})
+  const totalDueFollowUp = applications.filter(isFollowUpDue).length
 
   function handleEdit(app) {
     setEditingApp(app)
@@ -97,22 +96,34 @@ export default function Dashboard({ applications, settings, onSave, onDelete }) 
     <div className="dashboard">
       {/* Stats */}
       <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-value">{stats.total}</div>
-          <div className="stat-label">Total Applications</div>
+        <div
+          className={`stat-card stat-card-clickable ${filter === 'All' ? 'stat-card-active' : ''}`}
+          onClick={() => setFilter('All')}
+        >
+          <div className="stat-value">{applications.length}</div>
+          <div className="stat-label">Total</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{stats.active}</div>
-          <div className="stat-label">Active</div>
-        </div>
-        <div className={`stat-card ${stats.dueFollowUp > 0 ? 'stat-card-warn' : ''}`}>
-          <div className="stat-value">{stats.dueFollowUp}</div>
-          <div className="stat-label">Follow-ups Due</div>
-        </div>
-        <div className={`stat-card ${stats.offers > 0 ? 'stat-card-success' : ''}`}>
-          <div className="stat-value">{stats.offers}</div>
-          <div className="stat-label">Offers</div>
-        </div>
+        {ALL_STATUSES.map((s) => {
+          const colors = STATUS_COLORS[s]
+          const isActive = filter === s
+          const isWarn = s === 'Applied' && totalDueFollowUp > 0
+          return (
+            <div
+              key={s}
+              className={`stat-card stat-card-clickable ${isActive ? 'stat-card-active' : ''}`}
+              style={isActive ? { borderColor: colors.border, background: colors.bg } : {}}
+              onClick={() => setFilter(isActive ? 'All' : s)}
+            >
+              <div className="stat-value" style={{ color: counts[s] > 0 ? colors.text : 'var(--text-muted)' }}>
+                {counts[s]}
+              </div>
+              <div className="stat-label">{s}</div>
+              {s === 'Applied' && totalDueFollowUp > 0 && (
+                <div className="stat-followup-badge">{totalDueFollowUp} due</div>
+              )}
+            </div>
+          )
+        })}
       </div>
 
       {/* Toolbar */}
