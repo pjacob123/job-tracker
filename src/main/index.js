@@ -162,8 +162,8 @@ ipcMain.handle('export:docx', async (event, { content, defaultName }) => {
 })
 
 ipcMain.handle('export:pdf', async (event, { content, defaultName }) => {
-  const win = BrowserWindow.fromWebContents(event.sender)
-  const { filePath, canceled } = await dialog.showSaveDialog(win, {
+  const parentWin = BrowserWindow.fromWebContents(event.sender)
+  const { filePath, canceled } = await dialog.showSaveDialog(parentWin, {
     title: 'Save as PDF',
     defaultPath: defaultName || 'resume.pdf',
     filters: [{ name: 'PDF', extensions: ['pdf'] }]
