@@ -7,7 +7,10 @@ const api = {
   deleteApplication: (id) => ipcRenderer.invoke('data:deleteApplication', id),
   saveSettings: (settings) => ipcRenderer.invoke('settings:save', settings),
   claudeChat: (params) => ipcRenderer.invoke('claude:chat', params),
-  claudeImport: (params) => ipcRenderer.invoke('claude:import', params)
+  claudeImport: (params) => ipcRenderer.invoke('claude:import', params),
+  pickFile: () => ipcRenderer.invoke('file:pick'),
+  exportDocx: (params) => ipcRenderer.invoke('export:docx', params),
+  exportPdf: (params) => ipcRenderer.invoke('export:pdf', params)
 }
 
 if (process.contextIsolated) {
