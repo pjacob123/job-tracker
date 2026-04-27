@@ -34,6 +34,8 @@ export default function ApplicationModal({ application, settings, onSave, onClos
     notes: '',
     followUpDays: defaultDays,
     lastFollowUp: '',
+    recruiterName: '',
+    recruiterEmail: '',
     ...application
   })
 
@@ -137,28 +139,48 @@ export default function ApplicationModal({ application, settings, onSave, onClos
             />
           </div>
 
+          <div className="form-group">
+            <label>Salary Range</label>
+            <input
+              value={form.salaryRange}
+              onChange={(e) => setField('salaryRange', e.target.value)}
+              placeholder="e.g. $80k–$100k"
+            />
+          </div>
+
+          <div className="form-section-label">Contacts</div>
+
           <div className="form-row">
             <div className="form-group">
-              <label>Salary Range</label>
+              <label>Recruiter Name</label>
               <input
-                value={form.salaryRange}
-                onChange={(e) => setField('salaryRange', e.target.value)}
-                placeholder="e.g. $80k–$100k"
+                value={form.recruiterName}
+                onChange={(e) => setField('recruiterName', e.target.value)}
+                placeholder="John Doe"
               />
             </div>
             <div className="form-group">
-              <label>Contact Name</label>
+              <label>Recruiter Email</label>
               <input
-                value={form.contactName}
-                onChange={(e) => setField('contactName', e.target.value)}
-                placeholder="Jane Smith"
+                type="email"
+                value={form.recruiterEmail}
+                onChange={(e) => setField('recruiterEmail', e.target.value)}
+                placeholder="john@recruiter.com"
               />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <label>Contact Email</label>
+              <label>Hiring Manager Name</label>
+              <input
+                value={form.contactName}
+                onChange={(e) => setField('contactName', e.target.value)}
+                placeholder="Jane Smith"
+              />
+            </div>
+            <div className="form-group">
+              <label>Hiring Manager Email</label>
               <input
                 type="email"
                 value={form.contactEmail}
