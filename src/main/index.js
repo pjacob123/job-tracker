@@ -46,16 +46,22 @@ function getNextFollowUp(application) {
 function checkFollowUps() {
   if (!data.settings.notificationsEnabled) return
   const today = new Date().toISOString().split('T')[0]
+  let changed = false
+
   data.applications.forEach((application) => {
     if (['Rejected', 'Withdrawn', 'Offer'].includes(application.status)) return
     const next = getNextFollowUp(application)
-    if (next && next <= today) {
+    if (next && next <= today && application.lastNotified !== today) {
       new Notification({
         title: 'Job Application Follow-up',
         body: `Time to follow up with ${application.company} for ${application.role}`
       }).show()
+      application.lastNotified = today
+      changed = true
     }
   })
+
+  if (changed) saveData(data)
 }
 
 function createWindow() {
