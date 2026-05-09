@@ -26,6 +26,7 @@ export default function Dashboard({ applications, settings, onSave, onDelete }) 
   const [showModal, setShowModal] = useState(false)
   const [showImport, setShowImport] = useState(false)
   const [editingApp, setEditingApp] = useState(null)
+  const [viewingApp, setViewingApp] = useState(null)
   const [filter, setFilter] = useState('All')
   const [search, setSearch] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(null)
@@ -196,6 +197,7 @@ export default function Dashboard({ applications, settings, onSave, onDelete }) 
                 return (
                   <tr key={app.id} className={due ? 'row-alert' : ''}>
                     <td className="td-company">
+                      <button className="btn-info" onClick={() => setViewingApp(app)} title="View details">ℹ</button>
                       {app.url ? (
                         <a href={app.url} target="_blank" rel="noreferrer" className="company-link">
                           {app.company}
@@ -258,6 +260,56 @@ export default function Dashboard({ applications, settings, onSave, onDelete }) 
           </table>
         )}
       </div>
+
+      {/* Info modal */}
+      {viewingApp && (
+        <div className="modal-overlay" onClick={() => setViewingApp(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <h2>{viewingApp.company}</h2>
+                <div style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 2 }}>{viewingApp.role}</div>
+              </div>
+              <button className="btn-close" onClick={() => setViewingApp(null)}>✕</button>
+            </div>
+            <div className="info-grid">
+              {[
+                { label: 'Status',           value: viewingApp.status },
+                { label: 'Date Applied',     value: viewingApp.dateApplied },
+                { label: 'Next Follow-up',   value: getNextFollowUp(viewingApp) },
+                { label: 'Last Follow-up',   value: viewingApp.lastFollowUp },
+                { label: 'Salary Range',     value: viewingApp.salaryRange },
+                { label: 'Application URL',  value: viewingApp.url, isLink: true },
+                { label: 'Recruiter',        value: viewingApp.recruiterName },
+                { label: 'Recruiter Email',  value: viewingApp.recruiterEmail, isEmail: true },
+                { label: 'Hiring Manager',   value: viewingApp.contactName },
+                { label: 'Manager Email',    value: viewingApp.contactEmail, isEmail: true },
+              ].map(({ label, value, isLink, isEmail }) =>
+                value ? (
+                  <div key={label} className="info-row">
+                    <span className="info-label">{label}</span>
+                    <span className="info-value">
+                      {isLink ? <a href={value} target="_blank" rel="noreferrer" className="company-link">{value}</a>
+                       : isEmail ? <a href={`mailto:${value}`} className="company-link">{value}</a>
+                       : value}
+                    </span>
+                  </div>
+                ) : null
+              )}
+            </div>
+            {viewingApp.notes && (
+              <div className="info-notes">
+                <div className="info-label" style={{ marginBottom: 6 }}>Notes</div>
+                <div className="info-notes-body">{viewingApp.notes}</div>
+              </div>
+            )}
+            <div className="modal-footer" style={{ marginTop: 16 }}>
+              <button className="btn-secondary" onClick={() => setViewingApp(null)}>Close</button>
+              <button className="btn-primary" onClick={() => { setEditingApp(viewingApp); setShowModal(true); setViewingApp(null) }}>Edit</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Confirm delete */}
       {confirmDelete && (
