@@ -10,6 +10,25 @@ const STATUSES = [
   'Withdrawn'
 ]
 
+function parseSalaryNumber(str) {
+  const s = str.replace(/[$,\s]/g, '').toLowerCase()
+  if (s.endsWith('k')) return parseFloat(s) * 1000
+  if (s.endsWith('m')) return parseFloat(s) * 1000000
+  return parseFloat(s)
+}
+
+function formatSalary(raw) {
+  if (!raw || !raw.trim()) return raw
+  // Split on common range separators: -, –, to, /
+  const parts = raw.split(/[-–\/]|(?:\s+to\s+)/i).map((p) => p.trim()).filter(Boolean)
+  const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+  const formatted = parts.map((p) => {
+    const n = parseSalaryNumber(p)
+    return isNaN(n) ? p : fmt.format(n)
+  })
+  return formatted.length === 2 ? `${formatted[0]} – ${formatted[1]}` : formatted[0]
+}
+
 function getNextFollowUp(form) {
   const base = form.lastFollowUp || form.dateApplied
   if (!base || !form.followUpDays) return null
@@ -144,7 +163,8 @@ export default function ApplicationModal({ application, settings, onSave, onClos
             <input
               value={form.salaryRange}
               onChange={(e) => setField('salaryRange', e.target.value)}
-              placeholder="e.g. $80k–$100k"
+              onBlur={(e) => setField('salaryRange', formatSalary(e.target.value))}
+              placeholder="e.g. 80k-100k or 80000-120000"
             />
           </div>
 
